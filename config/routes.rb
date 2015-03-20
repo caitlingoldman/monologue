@@ -2,6 +2,7 @@ Monologue::Engine.routes.draw do
   root to:  "posts#index"
   get "/page/:page", to:  "posts#index", as:  "posts_page"
   get "/feed" => "posts#feed", as:  "feed", defaults: {format: :rss}
+  get "/search" => "posts#search", as: "search"
 
   get "/tags/:tag" =>"tags#show", as: "tags_page"
 

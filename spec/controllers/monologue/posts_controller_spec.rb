@@ -21,4 +21,12 @@ describe Monologue::PostsController do
       it { expect(assigns(:first_post_year)).not_to be_nil }
     end
   end
+
+  describe 'Get #search' do
+    it 'redirects to tags page' do
+      get :search, tag: 'this is a test'
+
+      expect(response).to redirect_to tags_page_path(tag: 'this is a test')
+    end
+  end
 end

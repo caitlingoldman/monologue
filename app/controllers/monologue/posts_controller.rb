@@ -4,6 +4,10 @@ class Monologue::PostsController < Monologue::ApplicationController
     @posts = Monologue::Post.page(@page).published
   end
 
+  def search
+    redirect_to tags_page_path(params[:tag])
+  end
+
   def show
     if monologue_current_user
       @post = Monologue::Post.default.where("url = :url", {url: params[:post_url]}).first
