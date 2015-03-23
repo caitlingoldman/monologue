@@ -10,10 +10,10 @@ class Monologue::ApplicationController < ApplicationController
   end
 
   def all_tags
-    @tags = Monologue::Tag.joins(:posts).where(monologue_posts: { published: true }).where("monologue_posts.published_at <= ?", DateTime.now).uniq
+    @tags = Monologue::Tag.for_published_posts
     #could use minmax here but it's only supported with ruby > 1.9'
-    @tags_frequency_min = @tags_frequency_max= Monologue::Tag.joins(:posts).group("monologue_tags.id").order("count_all ASC").count.values.min
-    @tags_frequency_max = Monologue::Tag.joins(:posts).group("monologue_tags.id").order("count_all ASC").count.values.max
+    @tags_frequency_min = Monologue::Tag.max_frequency
+    @tags_frequency_max = Monologue::Tag.min_frequency
   end
 
   def not_found
