@@ -33,7 +33,6 @@ module Monologue
                   :layout,
                   :sidebar,
 
-                  :skip_tag_load,
                   :users_table
   end
 
