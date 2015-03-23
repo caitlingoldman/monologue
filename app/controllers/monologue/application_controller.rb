@@ -3,18 +3,26 @@ class Monologue::ApplicationController < ApplicationController
 
   layout Monologue::Config.layout if Monologue::Config.layout # TODO: find a way to test that. It was asked in issue #54 (https://github.com/jipiboily/monologue/issues/54)
 
-  before_filter :recent_posts, :all_tags, :archive_posts
+  before_filter :recent_posts, :archive_posts
 
   def recent_posts
     @recent_posts = Monologue::Post.published.limit(3)
   end
 
   def all_tags
-    @tags = Monologue::Tag.order("name").select{|t| t.frequency>0}
-    #could use minmax here but it's only supported with ruby > 1.9'
-    @tags_frequency_min = @tags.map{|t| t.frequency}.min
-    @tags_frequency_max = @tags.map{|t| t.frequency}.max
+    @all_tags ||= Monologue::Tag.for_published_posts
   end
+  helper_method :all_tags
+
+  def tags_frequency_min
+    @tags_frequency_min ||= Monologue::Tag.min_frequency
+  end
+  helper_method :tags_frequency_min
+
+  def tags_frequency_max
+    @tags_frequency_max ||= Monologue::Tag.max_frequency
+  end
+  helper_method :tags_frequency_max
 
   def not_found
     # fallback to the default 404.html page from main_app.
