@@ -3,18 +3,17 @@ class Monologue::ApplicationController < ApplicationController
 
   layout Monologue::Config.layout if Monologue::Config.layout # TODO: find a way to test that. It was asked in issue #54 (https://github.com/jipiboily/monologue/issues/54)
 
-  before_filter :recent_posts, :archive_posts
-  before_filter :all_tags unless Monologue::Config.skip_tag_load
+  before_filter :recent_posts, :all_tags, :archive_posts
 
   def recent_posts
     @recent_posts = Monologue::Post.published.limit(3)
   end
 
   def all_tags
-    @tags = Monologue::Tag.order(name: :asc).select{|t| t.frequency>0}
+    @tags = Monologue::Tag.joins(:posts).where(monologue_posts: { published: true }).where("monologue_posts.published_at <= ?", DateTime.now).uniq
     #could use minmax here but it's only supported with ruby > 1.9'
-    @tags_frequency_min = @tags.map{|t| t.frequency}.min
-    @tags_frequency_max = @tags.map{|t| t.frequency}.max
+    @tags_frequency_min = @tags_frequency_max= Monologue::Tag.joins(:posts).group("monologue_tags.id").order("count_all ASC").count.values.min
+    @tags_frequency_max = Monologue::Tag.joins(:posts).group("monologue_tags.id").order("count_all ASC").count.values.max
   end
 
   def not_found
