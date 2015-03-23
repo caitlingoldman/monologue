@@ -10,10 +10,10 @@ class Monologue::ApplicationController < ApplicationController
   end
 
   def all_tags
-    @tags = Monologue::Tag.for_published_posts
+    @tags = order("name").select{|t| t.frequency>0}
     #could use minmax here but it's only supported with ruby > 1.9'
-    @tags_frequency_min = Monologue::Tag.max_frequency
-    @tags_frequency_max = Monologue::Tag.min_frequency
+    @tags_frequency_min = @tags.map{|t| t.frequency}.min
+    @tags_frequency_max = @tags.map{|t| t.frequency}.max
   end
 
   def not_found
