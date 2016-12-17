@@ -5,7 +5,19 @@ class Monologue::PostsController < Monologue::ApplicationController
   end
 
   def search
-    redirect_to tags_page_path(params[:tag])
+    @page = params[:page].nil? ? 1 : params[:page]
+    @posts = Monologue::Post
+      .page(@page)
+      .includes(:user)
+      .published
+      .joins(:tags, :user)
+      .where("
+        monologue_tags.name ILIKE :itext OR
+        monologue_posts.title ILIKE :itext OR
+        monologue_posts.content ILIKE :itext OR
+        users.first_name ILIKE :itext OR
+        users.last_name ILIKE :itext",
+        itext: "%#{params[:text]}%")
   end
 
   def show
