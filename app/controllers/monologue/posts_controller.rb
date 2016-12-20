@@ -6,7 +6,6 @@ class Monologue::PostsController < Monologue::ApplicationController
   end
 
   def search
-    @page = params[:page].nil? ? 1 : params[:page]
     @posts = Monologue::Post.search(params[:text], @page)
   end
 
