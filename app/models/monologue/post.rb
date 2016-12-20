@@ -52,6 +52,36 @@ class Monologue::Post < ActiveRecord::Base
     @number_of_pages = self.count / per_page + (self.count % per_page == 0 ? 0 : 1)
   end
 
+  def self.search(text, page = nil)
+    @text = text
+    query = self
+              .includes(:user)
+              .joins(:user)
+              .published
+              .where("
+                monologue_posts.title ILIKE :text OR
+                monologue_posts.content ILIKE :text OR
+                users.first_name ILIKE :text OR
+                users.last_name ILIKE :text OR
+                monologue_posts.id IN (#{search_ids_from_tags(text).to_sql})",
+                text: "%#{text}%")
+    if page
+      per_page = 10
+      query = query
+                .limit(per_page)
+                .offset((page.to_i - 1) * per_page)
+    end
+    query
+  end
+
+  def self.search_ids_from_tags(text)
+    Monologue::Tagging.distinct.select(:post_id).joins(:tag).where("monologue_tags.name ILIKE ?", "%#{text}%")
+  end
+
+  def self.search_total_pages
+    search(@text).count
+  end
+
   private
 
   def self.paged_results(p, per_page, admin)

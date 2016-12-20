@@ -5,7 +5,8 @@ class Monologue::PostsController < Monologue::ApplicationController
   end
 
   def search
-    redirect_to tags_page_path(params[:tag])
+    @page = params[:page].nil? ? 1 : params[:page]
+    @posts = Monologue::Post.search(params[:text], @page)
   end
 
   def show
