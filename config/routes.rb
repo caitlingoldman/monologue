@@ -19,5 +19,6 @@ Monologue::Engine.routes.draw do
     match "/post/preview"=>"posts#preview", :as=>"post_preview", :via => [:put, :post]
   end
 
+  get "author/:user_id/posts" => "author_posts#index", as: "author_posts"
   get "*post_url" => "posts#show", as:  "post"
 end
