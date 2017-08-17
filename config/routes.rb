@@ -20,5 +20,6 @@ Monologue::Engine.routes.draw do
   end
 
   get "author/:user_id/posts" => "author_posts#index", as: "author_posts"
+  get "author/:user_id/posts/page/:page" => "author_posts#index", as: "author_posts_page"
   get "*post_url" => "posts#show", as:  "post"
 end
