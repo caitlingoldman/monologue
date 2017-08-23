@@ -1,12 +1,9 @@
-class Monologue::PostsController < Monologue::ApplicationController
-  before_filter :set_page, only: [:index, :search]
+class Monologue::AuthorPostsController < Monologue::ApplicationController
+  before_filter :set_page, only: :index
 
   def index
-    @posts = Monologue::Post.page(@page).includes(:user).published
-  end
-
-  def search
-    @posts = Monologue::Post.search(params[:text], @page)
+    @user = Monologue::User.find(params[:user_id])
+    @posts = @user.posts.page(@page).includes(:user).published
   end
 
   def show
@@ -23,10 +20,10 @@ class Monologue::PostsController < Monologue::ApplicationController
   def feed
     @posts = Monologue::Post.published.limit(25)
   end
-
-  private
+ private
 
   def set_page
     @page = params[:page].nil? ? 1 : params[:page]
   end
+
 end
