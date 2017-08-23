@@ -6,10 +6,6 @@ class Monologue::AuthorPostsController < Monologue::ApplicationController
     @posts = @user.posts.page(@page).includes(:user).published
 	end
 
-	def search
-    @posts = Monologue::Post.search(params[:text], @page)
-  	end
-
   def show
     if monologue_current_user
       @post = Monologue::Post.default.where("url = :url", {url: params[:post_url]}).first
