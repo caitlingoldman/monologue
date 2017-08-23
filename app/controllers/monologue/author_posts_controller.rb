@@ -1,5 +1,5 @@
 class Monologue::AuthorPostsController < Monologue::ApplicationController
-  before_filter :set_page, only: [:index, :search]
+  before_filter :set_page, only: :index
 
   def index
     @user = Monologue::User.find(params[:user_id])
