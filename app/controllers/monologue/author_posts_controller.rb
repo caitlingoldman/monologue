@@ -1,10 +1,10 @@
 class Monologue::AuthorPostsController < Monologue::ApplicationController
-	before_filter :set_page, only: [:index, :search]
+  before_filter :set_page, only: [:index, :search]
 
-	def index
-		@user = Monologue::User.find(params[:user_id])
+  def index
+    @user = Monologue::User.find(params[:user_id])
     @posts = @user.posts.page(@page).includes(:user).published
-	end
+  end
 
   def show
     if monologue_current_user
